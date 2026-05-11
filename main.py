@@ -251,7 +251,7 @@ def main():
     
     # Detailed classification report
     print("\nClassification Report (OOF):")
-    print(classification_report(train_labels, oof_predictions, target_names=class_names, labels=list(range(config.num_classes))))
+    print(classification_report(train_labels, oof_predictions, target_names=class_names, labels=list(range(config.num_classes)), zero_division=0))
     
     logger.info(f"CV complete - Mean Acc: {np.mean(fold_scores):.2f}%, OOF Acc: {cv_accuracy:.2f}%")
     
@@ -293,7 +293,7 @@ def main():
         print(f"\nTest Accuracy: {test_accuracy:.2f}%")
         
         print("\nTest Set Classification Report:")
-        print(classification_report(test_labels, final_predictions, target_names=class_names, labels=list(range(config.num_classes))))
+        print(classification_report(test_labels, final_predictions, target_names=class_names, labels=list(range(config.num_classes)), zero_division=0))
         
         logger.info(f"Test Accuracy: {test_accuracy:.2f}%")
         
