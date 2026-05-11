@@ -217,7 +217,7 @@ def create_data_loaders(
     val_paths: Optional[List[Path]] = None,
     val_labels: Optional[List[int]] = None,
     test_paths: Optional[List[Path]] = None,
-    config = None
+    config: Optional[Config] = None
 ) -> Tuple[DataLoader, Optional[DataLoader], Optional[DataLoader]]:
     """Create PyTorch DataLoaders for train/val/test"""
     
