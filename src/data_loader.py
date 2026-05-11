@@ -14,6 +14,7 @@ from sklearn.model_selection import StratifiedKFold, KFold, train_test_split
 from PIL import Image
 import logging
 import os
+from config.config import Config
 
 logger = logging.getLogger(__name__)
 
