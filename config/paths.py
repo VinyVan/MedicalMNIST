@@ -36,6 +36,19 @@ class Paths:
     NOTEBOOKS_DIR = ROOT_DIR / "notebooks"
     
     @classmethod
+    def get_model_dir(cls, model_name):
+        """Get model-specific directory for saving models"""
+        model_dir = cls.MODELS_DIR / model_name
+        model_dir.mkdir(parents=True, exist_ok=True)
+        return model_dir
+    
+    @classmethod
+    def get_model_path(cls, model_name, fold):
+        """Get full path to a specific model checkpoint"""
+        model_dir = cls.get_model_dir(model_name)
+        return model_dir / f"model_fold_{fold}.pth"
+    
+    @classmethod
     def ensure_directories(cls):
         """Create all necessary directories if they don't exist"""
         directories = [

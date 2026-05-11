@@ -14,6 +14,7 @@ from sklearn.model_selection import StratifiedKFold, KFold, train_test_split
 from PIL import Image
 import logging
 import os
+from config.config import Config
 
 logger = logging.getLogger(__name__)
 
@@ -217,7 +218,8 @@ def create_data_loaders(
     val_paths: Optional[List[Path]] = None,
     val_labels: Optional[List[int]] = None,
     test_paths: Optional[List[Path]] = None,
-    config = None
+    test_labels: Optional[List[int]] = None,
+    config: Optional[Config] = None
 ) -> Tuple[DataLoader, Optional[DataLoader], Optional[DataLoader]]:
     """Create PyTorch DataLoaders for train/val/test"""
     
@@ -246,7 +248,7 @@ def create_data_loaders(
     if test_paths is not None:
         test_dataset = ImageFolderDataset(
             test_paths, 
-            None, 
+            test_labels, 
             transform=val_transform,
             convert_rgb=(config.num_channels == 3)
         )

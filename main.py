@@ -212,7 +212,8 @@ def main():
         train_loader, val_loader, _ = create_data_loaders(
             fold_train_paths, fold_train_labels,
             fold_val_paths, fold_val_labels,
-            None,
+            None,  # test_paths
+            None,  # test_labels
             config
         )
         
@@ -233,7 +234,8 @@ def main():
         oof_predictions[val_idx] = fold_preds
         
         # Save fold model
-        trainer.save_model(Paths.MODELS_DIR, fold=fold_idx)
+        model_dir = Paths.get_model_dir(config.model_name)
+        trainer.save_model(model_dir, fold=fold_idx)
         trained_models.append(trainer)
         
         logger.info(f"Fold {fold_idx+1} complete - Best Val Acc: {history['best_val_acc']:.2f}%")
@@ -251,7 +253,7 @@ def main():
     
     # Detailed classification report
     print("\nClassification Report (OOF):")
-    print(classification_report(train_labels, oof_predictions, target_names=class_names))
+    print(classification_report(train_labels, oof_predictions, target_names=class_names, labels=list(range(config.num_classes)), zero_division=0))
     
     logger.info(f"CV complete - Mean Acc: {np.mean(fold_scores):.2f}%, OOF Acc: {cv_accuracy:.2f}%")
     
@@ -272,7 +274,7 @@ def main():
         
         # Create test data loader
         _, _, test_loader = create_data_loaders(
-            train_paths[:1], [0], test_paths, test_labels, config
+            train_paths[:1], [0], None, None, test_paths, test_labels, config
         )
         
         # Ensemble predictions from all folds
@@ -293,7 +295,7 @@ def main():
         print(f"\nTest Accuracy: {test_accuracy:.2f}%")
         
         print("\nTest Set Classification Report:")
-        print(classification_report(test_labels, final_predictions, target_names=class_names))
+        print(classification_report(test_labels, final_predictions, target_names=class_names, labels=list(range(config.num_classes)), zero_division=0))
         
         logger.info(f"Test Accuracy: {test_accuracy:.2f}%")
         
