@@ -213,6 +213,7 @@ def main():
             fold_train_paths, fold_train_labels,
             fold_val_paths, fold_val_labels,
             None,  # test_paths
+            None,  # test_labels
             config
         )
         
@@ -272,7 +273,7 @@ def main():
         
         # Create test data loader
         _, _, test_loader = create_data_loaders(
-            train_paths[:1], [0], test_paths, test_labels, config
+            train_paths[:1], [0], None, None, test_paths, test_labels, config
         )
         
         # Ensemble predictions from all folds
