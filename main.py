@@ -212,7 +212,7 @@ def main():
         train_loader, val_loader, _ = create_data_loaders(
             fold_train_paths, fold_train_labels,
             fold_val_paths, fold_val_labels,
-            None,
+            None,  # test_paths
             config
         )
         
