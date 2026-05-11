@@ -131,6 +131,16 @@ def get_train_transforms(config, is_train: bool = True):
     """Get image transforms for training/validation"""
     transforms_list = []
     
+    # Safety check for config
+    if config is None:
+        # Default transforms if no config provided
+        transforms_list.extend([
+            transforms.Resize((64, 64)),
+            transforms.ToTensor(),
+            transforms.Normalize(mean=[0.5], std=[0.5])
+        ])
+        return transforms.Compose(transforms_list)
+    
     # For transfer learning models, we may need RGB
     if config.num_channels == 3:
         transforms_list.append(transforms.Lambda(lambda x: x.convert('RGB') if x.mode == 'L' else x))
