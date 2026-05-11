@@ -234,7 +234,8 @@ def main():
         oof_predictions[val_idx] = fold_preds
         
         # Save fold model
-        trainer.save_model(Paths.MODELS_DIR, fold=fold_idx)
+        model_dir = Paths.get_model_dir(config.model_name)
+        trainer.save_model(model_dir, fold=fold_idx)
         trained_models.append(trainer)
         
         logger.info(f"Fold {fold_idx+1} complete - Best Val Acc: {history['best_val_acc']:.2f}%")
