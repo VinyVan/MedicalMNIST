@@ -11,7 +11,7 @@ import matplotlib.pyplot as plt
 
 def analyze_guided_backprop(models, test_paths, true_labels, predictions, probabilities, 
                             class_names, config, save_dir="guided_backprop_results", 
-                            seed=42, n_samples_per_category=3):
+                            seed=42, n_samples_per_category=3, save_visualization=True, show_visualization=False):
     """
     Analyze predictions using Guided Backpropagation
     """
@@ -73,12 +73,17 @@ def analyze_guided_backprop(models, test_paths, true_labels, predictions, probab
             
             try:
                 fig = create_guided_backprop_visualization(
-                    model, test_paths[idx], true_label, pred_label, confidence, config
+                    model, test_paths[idx], true_label, pred_label, confidence, config, save_visualization, show_visualization
                 )
-                save_path = os.path.join(save_dir, f"{case_type}_{Path(test_paths[idx]).stem}.png")
-                fig.savefig(save_path, bbox_inches='tight', dpi=150)
-                plt.close(fig)
-                print(f"  💾 Saved to: {save_path}")
+                if fig is not None and save_visualization:
+                    save_path = os.path.join(save_dir, f"{case_type}_{Path(test_paths[idx]).stem}.png")
+                    fig.savefig(save_path, bbox_inches='tight', dpi=150)
+                    plt.close(fig)
+                    print(f"  💾 Saved to: {save_path}")
+                elif fig is not None and show_visualization:
+                    plt.close(fig)
+                else:
+                    print(f"  ✅ Generated (not saved/shown)")
             except Exception as e:
                 print(f"  ❌ Failed: {e}")
     
@@ -87,7 +92,7 @@ def analyze_guided_backprop(models, test_paths, true_labels, predictions, probab
 
 def analyze_guided_gradcam(models, test_paths, true_labels, predictions, probabilities,
                           class_names, config, save_dir="guided_gradcam_results",
-                          seed=42, n_samples_per_category=3):
+                          seed=42, n_samples_per_category=3, save_visualization=True, show_visualization=False):
     """
     Analyze predictions using Guided Grad-CAM
     """
@@ -149,12 +154,17 @@ def analyze_guided_gradcam(models, test_paths, true_labels, predictions, probabi
             
             try:
                 fig = create_guided_gradcam_visualization(
-                    model, test_paths[idx], true_label, pred_label, confidence, config
+                    model, test_paths[idx], true_label, pred_label, confidence, config, save_visualization, show_visualization
                 )
-                save_path = os.path.join(save_dir, f"{case_type}_{Path(test_paths[idx]).stem}.png")
-                fig.savefig(save_path, bbox_inches='tight', dpi=150)
-                plt.close(fig)
-                print(f"  💾 Saved to: {save_path}")
+                if fig is not None and save_visualization:
+                    save_path = os.path.join(save_dir, f"{case_type}_{Path(test_paths[idx]).stem}.png")
+                    fig.savefig(save_path, bbox_inches='tight', dpi=150)
+                    plt.close(fig)
+                    print(f"  💾 Saved to: {save_path}")
+                elif fig is not None and show_visualization:
+                    plt.close(fig)
+                else:
+                    print(f"  ✅ Generated (not saved/shown)")
             except Exception as e:
                 print(f"  ❌ Failed: {e}")
     
@@ -163,7 +173,7 @@ def analyze_guided_gradcam(models, test_paths, true_labels, predictions, probabi
 
 def analyze_occlusion(models, test_paths, true_labels, predictions, probabilities,
                      class_names, config, save_dir="occlusion_results",
-                     seed=42, n_samples_per_category=3):
+                     seed=42, n_samples_per_category=3, save_visualization=True, show_visualization=False):
     """
     Analyze predictions using Occlusion Sensitivity
     """
@@ -225,12 +235,17 @@ def analyze_occlusion(models, test_paths, true_labels, predictions, probabilitie
             
             try:
                 fig = create_occlusion_visualization(
-                    model, test_paths[idx], true_label, pred_label, confidence, config
+                    model, test_paths[idx], true_label, pred_label, confidence, config, save_visualization, show_visualization
                 )
-                save_path = os.path.join(save_dir, f"{case_type}_{Path(test_paths[idx]).stem}.png")
-                fig.savefig(save_path, bbox_inches='tight', dpi=150)
-                plt.close(fig)
-                print(f"  💾 Saved to: {save_path}")
+                if fig is not None and save_visualization:
+                    save_path = os.path.join(save_dir, f"{case_type}_{Path(test_paths[idx]).stem}.png")
+                    fig.savefig(save_path, bbox_inches='tight', dpi=150)
+                    plt.close(fig)
+                    print(f"  💾 Saved to: {save_path}")
+                elif fig is not None and show_visualization:
+                    plt.close(fig)
+                else:
+                    print(f"  ✅ Generated (not saved/shown)")
             except Exception as e:
                 print(f"  ❌ Failed: {e}")
     
@@ -239,7 +254,7 @@ def analyze_occlusion(models, test_paths, true_labels, predictions, probabilitie
 
 def analyze_lime(models, test_paths, true_labels, predictions, probabilities,
                class_names, config, save_dir="lime_results",
-               seed=42, n_samples_per_category=3):
+               seed=42, n_samples_per_category=3, save_visualization=True, show_visualization=False):
     """
     Analyze predictions using LIME
     """
@@ -301,12 +316,17 @@ def analyze_lime(models, test_paths, true_labels, predictions, probabilities,
             
             try:
                 fig = create_lime_visualization(
-                    model, test_paths[idx], true_label, pred_label, confidence, config
+                    model, test_paths[idx], true_label, pred_label, confidence, config, save_visualization, show_visualization
                 )
-                save_path = os.path.join(save_dir, f"{case_type}_{Path(test_paths[idx]).stem}.png")
-                fig.savefig(save_path, bbox_inches='tight', dpi=150)
-                plt.close(fig)
-                print(f"  💾 Saved to: {save_path}")
+                if fig is not None and save_visualization:
+                    save_path = os.path.join(save_dir, f"{case_type}_{Path(test_paths[idx]).stem}.png")
+                    fig.savefig(save_path, bbox_inches='tight', dpi=150)
+                    plt.close(fig)
+                    print(f"  💾 Saved to: {save_path}")
+                elif fig is not None and show_visualization:
+                    plt.close(fig)
+                else:
+                    print(f"  ✅ Generated (not saved/shown)")
             except Exception as e:
                 print(f"  ❌ Failed: {e}")
     
@@ -315,7 +335,7 @@ def analyze_lime(models, test_paths, true_labels, predictions, probabilities,
 
 def analyze_shap(models, test_paths, true_labels, predictions, probabilities,
               class_names, config, save_dir="shap_results",
-              seed=42, n_samples_per_category=3):
+              seed=42, n_samples_per_category=3, save_visualization=True, show_visualization=False):
     """
     Analyze predictions using SHAP
     """
@@ -377,12 +397,17 @@ def analyze_shap(models, test_paths, true_labels, predictions, probabilities,
             
             try:
                 fig = create_shap_visualization(
-                    model, test_paths[idx], true_label, pred_label, confidence, config
+                    model, test_paths[idx], true_label, pred_label, confidence, config, save_visualization, show_visualization
                 )
-                save_path = os.path.join(save_dir, f"{case_type}_{Path(test_paths[idx]).stem}.png")
-                fig.savefig(save_path, bbox_inches='tight', dpi=150)
-                plt.close(fig)
-                print(f"  💾 Saved to: {save_path}")
+                if fig is not None and save_visualization:
+                    save_path = os.path.join(save_dir, f"{case_type}_{Path(test_paths[idx]).stem}.png")
+                    fig.savefig(save_path, bbox_inches='tight', dpi=150)
+                    plt.close(fig)
+                    print(f"  💾 Saved to: {save_path}")
+                elif fig is not None and show_visualization:
+                    plt.close(fig)
+                else:
+                    print(f"  ✅ Generated (not saved/shown)")
             except Exception as e:
                 print(f"  ❌ Failed: {e}")
     
@@ -391,7 +416,7 @@ def analyze_shap(models, test_paths, true_labels, predictions, probabilities,
 
 def analyze_pci(models, test_paths, true_labels, predictions, probabilities,
               class_names, config, save_dir="pci_results",
-              seed=42, n_samples_per_category=3):
+              seed=42, n_samples_per_category=3, save_visualization=True, show_visualization=False):
     """
     Analyze predictions using Permutation Channel Importance (PCI)
     """
@@ -453,12 +478,17 @@ def analyze_pci(models, test_paths, true_labels, predictions, probabilities,
             
             try:
                 fig = create_pci_visualization(
-                    model, test_paths[idx], true_label, pred_label, confidence, config
+                    model, test_paths[idx], true_label, pred_label, confidence, config, save_visualization, show_visualization
                 )
-                save_path = os.path.join(save_dir, f"{case_type}_{Path(test_paths[idx]).stem}.png")
-                fig.savefig(save_path, bbox_inches='tight', dpi=150)
-                plt.close(fig)
-                print(f"  💾 Saved to: {save_path}")
+                if fig is not None and save_visualization:
+                    save_path = os.path.join(save_dir, f"{case_type}_{Path(test_paths[idx]).stem}.png")
+                    fig.savefig(save_path, bbox_inches='tight', dpi=150)
+                    plt.close(fig)
+                    print(f"  💾 Saved to: {save_path}")
+                elif fig is not None and show_visualization:
+                    plt.close(fig)
+                else:
+                    print(f"  ✅ Generated (not saved/shown)")
             except Exception as e:
                 print(f"  ❌ Failed: {e}")
     
@@ -467,7 +497,7 @@ def analyze_pci(models, test_paths, true_labels, predictions, probabilities,
 
 def analyze_inversion(test_paths, true_labels, predictions, probabilities,
                      class_names, save_dir="inversion_results",
-                     seed=42, n_samples_per_category=3):
+                     seed=42, n_samples_per_category=3, save_visualization=True, show_visualization=False):
     """
     Analyze predictions using Grayscale Image Inversion
     """
@@ -527,12 +557,17 @@ def analyze_inversion(test_paths, true_labels, predictions, probabilities,
             
             try:
                 fig = create_inversion_visualization(
-                    test_paths[idx], true_label, pred_label, confidence
+                    test_paths[idx], true_label, pred_label, confidence, save_visualization, show_visualization
                 )
-                save_path = os.path.join(save_dir, f"{case_type}_{Path(test_paths[idx]).stem}.png")
-                fig.savefig(save_path, bbox_inches='tight', dpi=150)
-                plt.close(fig)
-                print(f"  💾 Saved to: {save_path}")
+                if fig is not None and save_visualization:
+                    save_path = os.path.join(save_dir, f"{case_type}_{Path(test_paths[idx]).stem}.png")
+                    fig.savefig(save_path, bbox_inches='tight', dpi=150)
+                    plt.close(fig)
+                    print(f"  💾 Saved to: {save_path}")
+                elif fig is not None and show_visualization:
+                    plt.close(fig)
+                else:
+                    print(f"  ✅ Generated (not saved/shown)")
             except Exception as e:
                 print(f"  ❌ Failed: {e}")
     
@@ -542,7 +577,7 @@ def analyze_inversion(test_paths, true_labels, predictions, probabilities,
 def run_all_interpretability_analyses(models, test_paths, true_labels, predictions, 
                                       probabilities, class_names, config,
                                       base_save_dir="interpretability_analyses",
-                                      seed=42, n_samples_per_category=3):
+                                      seed=42, n_samples_per_category=3, save_visualization=True, show_visualization=False):
     """
     Run all interpretability analyses with categorization
     """
@@ -556,37 +591,44 @@ def run_all_interpretability_analyses(models, test_paths, true_labels, predictio
     analyze_guided_backprop(models, test_paths, true_labels, predictions, probabilities,
                            class_names, config, 
                            save_dir=os.path.join(base_save_dir, "guided_backprop"),
-                           seed=seed, n_samples_per_category=n_samples_per_category)
+                           seed=seed, n_samples_per_category=n_samples_per_category,
+                           save_visualization=save_visualization, show_visualization=show_visualization)
     
     analyze_guided_gradcam(models, test_paths, true_labels, predictions, probabilities,
                           class_names, config,
                           save_dir=os.path.join(base_save_dir, "guided_gradcam"),
-                          seed=seed, n_samples_per_category=n_samples_per_category)
+                          seed=seed, n_samples_per_category=n_samples_per_category,
+                          save_visualization=save_visualization, show_visualization=show_visualization)
     
     analyze_occlusion(models, test_paths, true_labels, predictions, probabilities,
                      class_names, config,
                      save_dir=os.path.join(base_save_dir, "occlusion"),
-                     seed=seed, n_samples_per_category=n_samples_per_category)
+                     seed=seed, n_samples_per_category=n_samples_per_category,
+                     save_visualization=save_visualization, show_visualization=show_visualization)
     
     analyze_lime(models, test_paths, true_labels, predictions, probabilities,
                class_names, config,
                save_dir=os.path.join(base_save_dir, "lime"),
-               seed=seed, n_samples_per_category=n_samples_per_category)
+               seed=seed, n_samples_per_category=n_samples_per_category,
+               save_visualization=save_visualization, show_visualization=show_visualization)
     
     analyze_shap(models, test_paths, true_labels, predictions, probabilities,
               class_names, config,
               save_dir=os.path.join(base_save_dir, "shap"),
-              seed=seed, n_samples_per_category=n_samples_per_category)
+              seed=seed, n_samples_per_category=n_samples_per_category,
+              save_visualization=save_visualization, show_visualization=show_visualization)
     
     analyze_pci(models, test_paths, true_labels, predictions, probabilities,
               class_names, config,
               save_dir=os.path.join(base_save_dir, "pci"),
-              seed=seed, n_samples_per_category=n_samples_per_category)
+              seed=seed, n_samples_per_category=n_samples_per_category,
+              save_visualization=save_visualization, show_visualization=show_visualization)
     
     analyze_inversion(test_paths, true_labels, predictions, probabilities,
                      class_names,
                      save_dir=os.path.join(base_save_dir, "inversion"),
-                     seed=seed, n_samples_per_category=n_samples_per_category)
+                     seed=seed, n_samples_per_category=n_samples_per_category,
+                     save_visualization=save_visualization, show_visualization=show_visualization)
     
     print("\n" + "=" * 70)
     print("✅ ALL INTERPRETABILITY ANALYSES COMPLETE")
