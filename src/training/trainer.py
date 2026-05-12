@@ -5,6 +5,7 @@ Handles training loops, validation, cross-validation, and early stopping
 
 import torch
 import torch.nn as nn
+import torch.nn.functional as F
 import torch.optim as optim
 from torch.optim.lr_scheduler import ReduceLROnPlateau, StepLR, CosineAnnealingLR
 from sklearn.model_selection import StratifiedKFold, KFold
@@ -16,6 +17,8 @@ from typing import Tuple, Dict, List, Optional
 import logging
 from tqdm import tqdm
 import time
+from PIL import Image
+from src.data_loader import get_train_transforms
 
 logger = logging.getLogger(__name__)
 
@@ -274,3 +277,44 @@ class CVTrainer:
         self.model.load_state_dict(checkpoint['model_state_dict'])
         self.best_val_acc = checkpoint.get('best_val_acc', 0.0)
         logger.info(f"Model loaded from {model_path}")
+
+
+def predict_single_image(models, image_path, config):
+    """
+    Predict on a single image using ensemble of models
+    
+    Args:
+        models: List of trained models for ensemble prediction
+        image_path: Path to the image file
+        config: Configuration object containing device and transform settings
+    
+    Returns:
+        pred: Predicted class index
+        probs: Array of class probabilities
+    """
+    # Use validation transform (NO augmentation)
+    transform = get_train_transforms(config, is_train=False)
+    
+    img = Image.open(image_path)
+    img = transform(img)  # <-- your exact pipeline
+    
+    # Add batch dimension
+    img = img.unsqueeze(0).to(config.device)
+    
+    model_outputs = []
+    
+    with torch.no_grad():
+        for model in models:
+            model = model.to(config.device)
+            model.eval()
+            
+            outputs = model(img)
+            probs = F.softmax(outputs, dim=1)
+            model_outputs.append(probs)
+    
+    avg_probs = torch.mean(torch.stack(model_outputs), dim=0)
+    
+    pred = torch.argmax(avg_probs, dim=1).item()
+    probs = avg_probs.squeeze().cpu().numpy()
+    
+    return pred, probs
