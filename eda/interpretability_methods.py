@@ -44,7 +44,8 @@ class GuidedBackprop:
         
         def backward_hook(module, grad_input, grad_output):
             # Guided backprop: only positive gradients
-            guided_grad = torch.clamp(grad_input[0], min=0.0)
+            # Clone to avoid in-place modification error
+            guided_grad = torch.clamp(grad_input[0].clone(), min=0.0)
             return (guided_grad,)
         
         # Register hooks on all ReLU layers
@@ -76,7 +77,7 @@ class GuidedBackprop:
         return gradients
 
 
-def create_guided_backprop_visualization(model, image_path, true_label, predicted_label, confidence, config):
+def create_guided_backprop_visualization(model, image_path, true_label, predicted_label, confidence, config, save_visualization=True, show_visualization=False):
     """Create guided backpropagation visualization"""
     # Load and preprocess image
     img = Image.open(image_path).convert('L')
@@ -110,7 +111,15 @@ def create_guided_backprop_visualization(model, image_path, true_label, predicte
     ax2.axis('off')
     
     plt.tight_layout()
-    return fig
+    
+    if show_visualization:
+        plt.show()
+    
+    if save_visualization:
+        return fig
+    else:
+        plt.close(fig)
+        return None
 
 
 # ============================================================
@@ -139,7 +148,8 @@ class GuidedGradCAM:
             module.input = input
         
         def relu_backward_hook(module, grad_input, grad_output):
-            guided_grad = torch.clamp(grad_input[0], min=0.0)
+            # Clone to avoid in-place modification error
+            guided_grad = torch.clamp(grad_input[0].clone(), min=0.0)
             return (guided_grad,)
         
         # Register hooks on target layer
@@ -191,7 +201,7 @@ class GuidedGradCAM:
         return guided_gradcam, cam, guided_grads
 
 
-def create_guided_gradcam_visualization(model, image_path, true_label, predicted_label, confidence, config):
+def create_guided_gradcam_visualization(model, image_path, true_label, predicted_label, confidence, config, save_visualization=True, show_visualization=False):
     """Create guided Grad-CAM visualization"""
     # Load and preprocess image
     img = Image.open(image_path).convert('L')
@@ -241,7 +251,15 @@ def create_guided_gradcam_visualization(model, image_path, true_label, predicted
     axes[3].axis('off')
     
     plt.tight_layout()
-    return fig
+    
+    if show_visualization:
+        plt.show()
+    
+    if save_visualization:
+        return fig
+    else:
+        plt.close(fig)
+        return None
 
 
 # ============================================================
@@ -292,7 +310,7 @@ class OcclusionSensitivity:
         return occlusion_map
 
 
-def create_occlusion_visualization(model, image_path, true_label, predicted_label, confidence, config):
+def create_occlusion_visualization(model, image_path, true_label, predicted_label, confidence, config, save_visualization=True, show_visualization=False):
     """Create occlusion sensitivity visualization"""
     # Load and preprocess image
     img = Image.open(image_path).convert('L')
@@ -338,7 +356,15 @@ def create_occlusion_visualization(model, image_path, true_label, predicted_labe
     ax3.axis('off')
     
     plt.tight_layout()
-    return fig
+    
+    if show_visualization:
+        plt.show()
+    
+    if save_visualization:
+        return fig
+    else:
+        plt.close(fig)
+        return None
 
 
 # ============================================================
@@ -423,7 +449,7 @@ class LimeExplainer:
         return feature_importance
 
 
-def create_lime_visualization(model, image_path, true_label, predicted_label, confidence, config):
+def create_lime_visualization(model, image_path, true_label, predicted_label, confidence, config, save_visualization=True, show_visualization=False):
     """Create LIME visualization"""
     # Load and preprocess image
     img = Image.open(image_path).convert('L')
@@ -459,7 +485,7 @@ def create_lime_visualization(model, image_path, true_label, predicted_label, co
     
     # Overlay
     original_rgb = np.stack([np.array(original_img)]*3, axis=-1).astype(np.float32) / 255.0
-    heatmap_color = cv2.applyColorMap(np.uint8(255 * lime_resized), cv2.COLORMAP_RDBU)
+    heatmap_color = cv2.applyColorMap(np.uint8(255 * lime_resized), cv2.COLORMAP_JET)
     heatmap_color = cv2.cvtColor(heatmap_color, cv2.COLOR_BGR2RGB) / 255.0
     overlay = 0.6 * original_rgb + 0.4 * heatmap_color
     overlay = np.clip(overlay, 0, 1)
@@ -469,7 +495,15 @@ def create_lime_visualization(model, image_path, true_label, predicted_label, co
     ax3.axis('off')
     
     plt.tight_layout()
-    return fig
+    
+    if show_visualization:
+        plt.show()
+    
+    if save_visualization:
+        return fig
+    else:
+        plt.close(fig)
+        return None
 
 
 # ============================================================
@@ -517,7 +551,7 @@ class ShapExplainer:
         return shap_values
 
 
-def create_shap_visualization(model, image_path, true_label, predicted_label, confidence, config):
+def create_shap_visualization(model, image_path, true_label, predicted_label, confidence, config, save_visualization=True, show_visualization=False):
     """Create SHAP visualization"""
     # Load and preprocess image
     img = Image.open(image_path).convert('L')
@@ -563,7 +597,15 @@ def create_shap_visualization(model, image_path, true_label, predicted_label, co
     ax3.axis('off')
     
     plt.tight_layout()
-    return fig
+    
+    if show_visualization:
+        plt.show()
+    
+    if save_visualization:
+        return fig
+    else:
+        plt.close(fig)
+        return None
 
 
 # ============================================================
@@ -618,7 +660,7 @@ class PermutationChannelImportance:
         }
 
 
-def create_pci_visualization(model, image_path, true_label, predicted_label, confidence, config):
+def create_pci_visualization(model, image_path, true_label, predicted_label, confidence, config, save_visualization=True, show_visualization=False):
     """Create Permutation Channel Importance visualization"""
     # Load and preprocess image
     img = Image.open(image_path).convert('L')
@@ -666,7 +708,15 @@ def create_pci_visualization(model, image_path, true_label, predicted_label, con
              bbox=dict(boxstyle='round', facecolor='wheat', alpha=0.5))
     
     plt.tight_layout()
-    return fig
+    
+    if show_visualization:
+        plt.show()
+    
+    if save_visualization:
+        return fig
+    else:
+        plt.close(fig)
+        return None
 
 
 # ============================================================
@@ -696,7 +746,7 @@ def invert_grayscale_image(image_path, display_size=(256, 256)):
     return inverted_img
 
 
-def create_inversion_visualization(image_path, true_label, predicted_label, confidence):
+def create_inversion_visualization(image_path, true_label, predicted_label, confidence, save_visualization=True, show_visualization=False):
     """Create visualization showing original and inverted grayscale image"""
     # Load original image
     img = Image.open(image_path).convert('L')
@@ -717,14 +767,22 @@ def create_inversion_visualization(image_path, true_label, predicted_label, conf
     ax2.axis('off')
     
     plt.tight_layout()
-    return fig
+    
+    if show_visualization:
+        plt.show()
+    
+    if save_visualization:
+        return fig
+    else:
+        plt.close(fig)
+        return None
 
 
 # ============================================================
 # COMPREHENSIVE INTERPRETABILITY ANALYSIS
 # ============================================================
 
-def run_comprehensive_interpretability(model, image_path, true_label, predicted_label, confidence, config, save_dir="interpretability_results"):
+def run_comprehensive_interpretability(model, image_path, true_label, predicted_label, confidence, config, save_dir="interpretability_results", save_visualization=True, show_visualization=False):
     """Run all interpretability methods on a single image"""
     import os
     os.makedirs(save_dir, exist_ok=True)
@@ -740,84 +798,126 @@ def run_comprehensive_interpretability(model, image_path, true_label, predicted_
     # 1. Guided Backpropagation
     try:
         print("\n1. Generating Guided Backpropagation...")
-        fig = create_guided_backprop_visualization(model, image_path, true_label, predicted_label, confidence, config)
-        save_path = os.path.join(save_dir, f"guided_backprop_{Path(image_path).stem}.png")
-        fig.savefig(save_path, bbox_inches='tight', dpi=150)
-        plt.close(fig)
-        print(f"   ✅ Saved to: {save_path}")
-        results['guided_backprop'] = save_path
+        fig = create_guided_backprop_visualization(model, image_path, true_label, predicted_label, confidence, config, save_visualization, show_visualization)
+        if fig is not None and save_visualization:
+            save_path = os.path.join(save_dir, f"guided_backprop_{Path(image_path).stem}.png")
+            fig.savefig(save_path, bbox_inches='tight', dpi=150)
+            plt.close(fig)
+            print(f"   ✅ Saved to: {save_path}")
+            results['guided_backprop'] = save_path
+        elif fig is not None and show_visualization:
+            plt.close(fig)
+            results['guided_backprop'] = 'shown'
+        else:
+            results['guided_backprop'] = 'generated'
     except Exception as e:
         print(f"   ❌ Failed: {e}")
     
     # 2. Guided Grad-CAM
     try:
         print("\n2. Generating Guided Grad-CAM...")
-        fig = create_guided_gradcam_visualization(model, image_path, true_label, predicted_label, confidence, config)
-        save_path = os.path.join(save_dir, f"guided_gradcam_{Path(image_path).stem}.png")
-        fig.savefig(save_path, bbox_inches='tight', dpi=150)
-        plt.close(fig)
-        print(f"   ✅ Saved to: {save_path}")
-        results['guided_gradcam'] = save_path
+        fig = create_guided_gradcam_visualization(model, image_path, true_label, predicted_label, confidence, config, save_visualization, show_visualization)
+        if fig is not None and save_visualization:
+            save_path = os.path.join(save_dir, f"guided_gradcam_{Path(image_path).stem}.png")
+            fig.savefig(save_path, bbox_inches='tight', dpi=150)
+            plt.close(fig)
+            print(f"   ✅ Saved to: {save_path}")
+            results['guided_gradcam'] = save_path
+        elif fig is not None and show_visualization:
+            plt.close(fig)
+            results['guided_gradcam'] = 'shown'
+        else:
+            results['guided_gradcam'] = 'generated'
     except Exception as e:
         print(f"   ❌ Failed: {e}")
     
     # 3. Occlusion Sensitivity
     try:
         print("\n3. Generating Occlusion Sensitivity...")
-        fig = create_occlusion_visualization(model, image_path, true_label, predicted_label, confidence, config)
-        save_path = os.path.join(save_dir, f"occlusion_{Path(image_path).stem}.png")
-        fig.savefig(save_path, bbox_inches='tight', dpi=150)
-        plt.close(fig)
-        print(f"   ✅ Saved to: {save_path}")
-        results['occlusion'] = save_path
+        fig = create_occlusion_visualization(model, image_path, true_label, predicted_label, confidence, config, save_visualization, show_visualization)
+        if fig is not None and save_visualization:
+            save_path = os.path.join(save_dir, f"occlusion_{Path(image_path).stem}.png")
+            fig.savefig(save_path, bbox_inches='tight', dpi=150)
+            plt.close(fig)
+            print(f"   ✅ Saved to: {save_path}")
+            results['occlusion'] = save_path
+        elif fig is not None and show_visualization:
+            plt.close(fig)
+            results['occlusion'] = 'shown'
+        else:
+            results['occlusion'] = 'generated'
     except Exception as e:
         print(f"   ❌ Failed: {e}")
     
     # 4. LIME
     try:
         print("\n4. Generating LIME explanation...")
-        fig = create_lime_visualization(model, image_path, true_label, predicted_label, confidence, config)
-        save_path = os.path.join(save_dir, f"lime_{Path(image_path).stem}.png")
-        fig.savefig(save_path, bbox_inches='tight', dpi=150)
-        plt.close(fig)
-        print(f"   ✅ Saved to: {save_path}")
-        results['lime'] = save_path
+        fig = create_lime_visualization(model, image_path, true_label, predicted_label, confidence, config, save_visualization, show_visualization)
+        if fig is not None and save_visualization:
+            save_path = os.path.join(save_dir, f"lime_{Path(image_path).stem}.png")
+            fig.savefig(save_path, bbox_inches='tight', dpi=150)
+            plt.close(fig)
+            print(f"   ✅ Saved to: {save_path}")
+            results['lime'] = save_path
+        elif fig is not None and show_visualization:
+            plt.close(fig)
+            results['lime'] = 'shown'
+        else:
+            results['lime'] = 'generated'
     except Exception as e:
         print(f"   ❌ Failed: {e}")
     
     # 5. SHAP
     try:
         print("\n5. Generating SHAP explanation...")
-        fig = create_shap_visualization(model, image_path, true_label, predicted_label, confidence, config)
-        save_path = os.path.join(save_dir, f"shap_{Path(image_path).stem}.png")
-        fig.savefig(save_path, bbox_inches='tight', dpi=150)
-        plt.close(fig)
-        print(f"   ✅ Saved to: {save_path}")
-        results['shap'] = save_path
+        fig = create_shap_visualization(model, image_path, true_label, predicted_label, confidence, config, save_visualization, show_visualization)
+        if fig is not None and save_visualization:
+            save_path = os.path.join(save_dir, f"shap_{Path(image_path).stem}.png")
+            fig.savefig(save_path, bbox_inches='tight', dpi=150)
+            plt.close(fig)
+            print(f"   ✅ Saved to: {save_path}")
+            results['shap'] = save_path
+        elif fig is not None and show_visualization:
+            plt.close(fig)
+            results['shap'] = 'shown'
+        else:
+            results['shap'] = 'generated'
     except Exception as e:
         print(f"   ❌ Failed: {e}")
     
     # 6. Permutation Channel Importance (PCI)
     try:
         print("\n6. Generating Permutation Channel Importance...")
-        fig = create_pci_visualization(model, image_path, true_label, predicted_label, confidence, config)
-        save_path = os.path.join(save_dir, f"pci_{Path(image_path).stem}.png")
-        fig.savefig(save_path, bbox_inches='tight', dpi=150)
-        plt.close(fig)
-        print(f"   ✅ Saved to: {save_path}")
-        results['pci'] = save_path
+        fig = create_pci_visualization(model, image_path, true_label, predicted_label, confidence, config, save_visualization, show_visualization)
+        if fig is not None and save_visualization:
+            save_path = os.path.join(save_dir, f"pci_{Path(image_path).stem}.png")
+            fig.savefig(save_path, bbox_inches='tight', dpi=150)
+            plt.close(fig)
+            print(f"   ✅ Saved to: {save_path}")
+            results['pci'] = save_path
+        elif fig is not None and show_visualization:
+            plt.close(fig)
+            results['pci'] = 'shown'
+        else:
+            results['pci'] = 'generated'
     except Exception as e:
         print(f"   ❌ Failed: {e}")
     
     # 7. Grayscale Inversion
     try:
         print("\n7. Generating Grayscale Inversion...")
-        fig = create_inversion_visualization(image_path, true_label, predicted_label, confidence)
-        save_path = os.path.join(save_dir, f"inversion_{Path(image_path).stem}.png")
-        fig.savefig(save_path, bbox_inches='tight', dpi=150)
-        plt.close(fig)
-        print(f"   ✅ Saved to: {save_path}")
-        results['inversion'] = save_path
+        fig = create_inversion_visualization(image_path, true_label, predicted_label, confidence, save_visualization, show_visualization)
+        if fig is not None and save_visualization:
+            save_path = os.path.join(save_dir, f"inversion_{Path(image_path).stem}.png")
+            fig.savefig(save_path, bbox_inches='tight', dpi=150)
+            plt.close(fig)
+            print(f"   ✅ Saved to: {save_path}")
+            results['inversion'] = save_path
+        elif fig is not None and show_visualization:
+            plt.close(fig)
+            results['inversion'] = 'shown'
+        else:
+            results['inversion'] = 'generated'
     except Exception as e:
         print(f"   ❌ Failed: {e}")
     
